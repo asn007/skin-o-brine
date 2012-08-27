@@ -1,10 +1,13 @@
-﻿package su.nextgen.dev.skinstealer;
+package su.nextgen.dev.skinstealer;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -160,6 +163,7 @@ public class Graphics {
 											+ File.separator
 											+ txtEnterNickname.getText()
 											+ ".png"))));
+							System.gc();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -167,6 +171,52 @@ public class Graphics {
 						txtSkinUrlWill
 								.setText("http://s3.amazonaws.com/MinecraftSkins/"
 										+ txtEnterNickname.getText() + ".png");
+						try {
+							File skf = new File(System.getProperty("user.home",
+									".")
+									+ File.separator
+									+ txtEnterNickname.getText() + ".png");
+							System.out.println(System.getProperty("user.home",
+									"."));
+							if (!skf.exists()) {
+								skf.createNewFile();
+							}
+							if (skf.exists()) {
+								skf.delete();
+								skf.createNewFile();
+							}
+							skf = null;
+							System.gc();
+							byte[] skinarray = Utils
+									.readBytesFromFile(new File(Utils
+											.getWorkingDirectory()
+											+ File.separator
+											+ txtEnterNickname.getText()
+											+ ".png"));
+							FileOutputStream fos = new FileOutputStream(
+									new File(System.getProperty("user.home",
+											".")
+											+ File.separator
+											+ txtEnterNickname.getText()
+											+ ".png"));
+							fos.write(skinarray);
+							if (fos != null) {
+								fos.close();
+							}
+							System.gc();
+						} catch (FileNotFoundException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							System.out
+									.println("^\n| error log. Exiting now...");
+							System.exit(0);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							System.out
+									.println("^\n| error log. Exiting now...");
+							System.exit(0);
+						}
 						txtEnterNickname.setEnabled(true);
 					}
 				}.start();

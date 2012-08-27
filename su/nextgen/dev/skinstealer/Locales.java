@@ -1,4 +1,4 @@
-﻿package su.nextgen.dev.skinstealer;
+package su.nextgen.dev.skinstealer;
 
 public enum Locales {
 

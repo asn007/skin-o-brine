@@ -26,6 +26,7 @@ public class Graphics {
 	public static JLabel label_1;
 	public static JLabel label;
 	public static JLabel label_2;
+	public static JLabel lblStatusWaitingFor;
 
 	/**
 	 * Launch the application.
@@ -74,8 +75,7 @@ public class Graphics {
 		frame.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 
-		JLabel lblStatusWaitingFor = new JLabel(
-				"Status: waiting for user input");
+		lblStatusWaitingFor = new JLabel("Status: waiting for user input");
 		lblStatusWaitingFor.setBounds(0, 517, 140, 14);
 		panel.add(lblStatusWaitingFor);
 
@@ -85,10 +85,6 @@ public class Graphics {
 		txtSkinUrlWill.setBounds(0, 486, 176, 20);
 		panel.add(txtSkinUrlWill);
 		txtSkinUrlWill.setColumns(10);
-
-		JButton btnReset = new JButton("Reset");
-		btnReset.setBounds(110, 452, 66, 23);
-		panel.add(btnReset);
 
 		txtEnterNickname = new JTextField();
 		txtEnterNickname.setText("Enter nickname");
@@ -122,6 +118,7 @@ public class Graphics {
 
 					@SuppressWarnings("static-access")
 					public void run() {
+						txtSkinUrlWill.setText("");
 						txtEnterNickname.setEnabled(false);
 						try {
 							url = new URL(
@@ -135,6 +132,8 @@ public class Graphics {
 
 						new Thread() {
 							public void run() {
+								lblStatusWaitingFor
+										.setText("Status: stealing skin...");
 								Utils.getSkin(url, txtEnterNickname.getText());
 							}
 						}.start();
@@ -148,6 +147,7 @@ public class Graphics {
 							}
 						}
 						try {
+							lblStatusWaitingFor.setText("Status: skin stolen!");
 							Graphics.label.setIcon(new ImageIcon(Utils
 									.parseSkin(new File(Utils
 											.getWorkingDirectory()
@@ -164,6 +164,9 @@ public class Graphics {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						txtSkinUrlWill
+								.setText("http://s3.amazonaws.com/MinecraftSkins/"
+										+ txtEnterNickname.getText() + ".png");
 						txtEnterNickname.setEnabled(true);
 					}
 				}.start();
@@ -172,5 +175,22 @@ public class Graphics {
 
 		});
 
+		JButton btnReset = new JButton("Reset");
+		btnReset.setBounds(110, 452, 66, 23);
+		panel.add(btnReset);
+		btnReset.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				txtEnterNickname.setText("Enter nickname");
+				txtSkinUrlWill.setText("Skin URL will be here");
+				txtSkinUrlWill.setEditable(false);
+				txtEnterNickname.setEnabled(true);
+				lblStatusWaitingFor.setText("Status: waiting for user input");
+				label.setIcon(null);
+				label_2.setIcon(null);
+			}
+
+		});
 	}
 }
